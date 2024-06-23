@@ -8,10 +8,14 @@ import 'package:tinder_clone/components/my_map.dart';
 
 class HomePageMobileScaffold extends StatelessWidget {
   final _tinder_cloneTabController = PageController();
+
   HomePageMobileScaffold({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = Theme.of(context).colorScheme.surface;
+    final mainColor = Theme.of(context).colorScheme.primary;
+
     return PlatformScaffold(
       appBar: PlatformAppBar(
           backgroundColor: Colors.transparent,
@@ -38,7 +42,7 @@ class HomePageMobileScaffold extends StatelessWidget {
                 ) =>
                     Container(
                       decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
+                          color: backgroundColor,
                           borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(25))),
                       height: MediaQuery.of(context).size.height / 1.6,
@@ -47,16 +51,6 @@ class HomePageMobileScaffold extends StatelessWidget {
                         children: [
                           PlatformText(
                               "Let's get you started creating a tinder_clone!"),
-                          // SizedBox(
-                          //   height: MediaQuery.of(context).size.height / 1.8,
-                          //   child: PageView(
-                          //     controller: _tinder_cloneTabController,
-                          //     children: const [
-                          //       // tinder_cloneCreationScreen(),
-                          //       // tinder_cloneCreationScreen()
-                          //     ],
-                          //   ),
-                          // ),
                         ],
                       ),
                     ));
@@ -66,50 +60,84 @@ class HomePageMobileScaffold extends StatelessWidget {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         // body: const MyMap(),
-        body: Center(
-            child: Container(
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(25))),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        body: Container(
+          color: backgroundColor,
+          child: Stack(
             children: [
-              SizedBox(
-                  height: MediaQuery.of(context).size.height / 1.3,
-                  child: SwipableStack(
-                      horizontalSwipeThreshold: 0.8,
-                      verticalSwipeThreshold: 0.8,
-                      stackClipBehaviour: Clip.none,
-                      onSwipeCompleted: (index, direction) {
-                        print('$index, $direction');
-                      },
-                      detectableSwipeDirections: const {
-                        SwipeDirection.right,
-                        SwipeDirection.left,
-                      },
-                      builder: (context, properties) {
-                        return Stack(
-                          children: [MatchProfileModal(), MatchProfileModal()],
-                        );
-                      }))
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height / 1.3,
-              //   child: PageView(
-              //     controller: _tinder_cloneTabController,
-              //     children: const [
-              //       MatchProfileModal()
-              //       // tinder_cloneCreationScreen()
-              //     ],
-              //   ),
-              // ),
+              CustomPaint(
+                painter: ShapesPainter(color: mainColor),
+                child: Container(
+                  height: 200,
+                ),
+              ),
+              Center(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(25)),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 1.3,
+                        child: SwipableStack(
+                          horizontalSwipeThreshold: 0.8,
+                          verticalSwipeThreshold: 0.8,
+                          stackClipBehaviour: Clip.none,
+                          onSwipeCompleted: (index, direction) {
+                            print('$index, $direction');
+                          },
+                          detectableSwipeDirections: const {
+                            SwipeDirection.right,
+                            SwipeDirection.left,
+                          },
+                          builder: (context, properties) {
+                            return const Stack(
+                              children: [
+                                MatchProfileModal(),
+                                MatchProfileModal(),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
-        )),
+        ),
         // drawer: const MyDrawer(),
         bottomNavBar: const MyBottomAppBar(),
       ),
       cupertino: (_, __) => CupertinoPageScaffoldData(body: const MyMap()),
     );
+  }
+}
+
+const double _kCurveHeight = 35;
+
+class ShapesPainter extends CustomPainter {
+  final Color color;
+
+  ShapesPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p = Path();
+    p.lineTo(0, size.height - _kCurveHeight);
+    p.relativeQuadraticBezierTo(
+        size.width / 2, 2 * _kCurveHeight, size.width, 0);
+    p.lineTo(size.width, 0);
+    p.close();
+
+    canvas.drawPath(p, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return oldDelegate != this;
   }
 }

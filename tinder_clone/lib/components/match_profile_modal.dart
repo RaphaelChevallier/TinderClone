@@ -6,7 +6,7 @@ class MatchProfileModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(40),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:swipable_stack/swipable_stack.dart';
 import 'package:tinder_clone/components/match_profile_modal.dart';
 import 'package:tinder_clone/components/my_bottom_app_bar.dart';
 // import 'package:tinder_clone/components/my_tinder_clone_creation_tab.dart';
@@ -61,7 +62,7 @@ class HomePageMobileScaffold extends StatelessWidget {
                     ));
           },
           shape: const CircleBorder(),
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.person),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         // body: const MyMap(),
@@ -75,15 +76,33 @@ class HomePageMobileScaffold extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height / 1.5,
-                child: PageView(
-                  controller: _tinder_cloneTabController,
-                  children: const [
-                    MatchProfileModal()
-                    // tinder_cloneCreationScreen()
-                  ],
-                ),
-              ),
+                  height: MediaQuery.of(context).size.height / 1.3,
+                  child: SwipableStack(
+                      horizontalSwipeThreshold: 0.8,
+                      verticalSwipeThreshold: 0.8,
+                      stackClipBehaviour: Clip.none,
+                      onSwipeCompleted: (index, direction) {
+                        print('$index, $direction');
+                      },
+                      detectableSwipeDirections: const {
+                        SwipeDirection.right,
+                        SwipeDirection.left,
+                      },
+                      builder: (context, properties) {
+                        return Stack(
+                          children: [MatchProfileModal(), MatchProfileModal()],
+                        );
+                      }))
+              // SizedBox(
+              //   height: MediaQuery.of(context).size.height / 1.3,
+              //   child: PageView(
+              //     controller: _tinder_cloneTabController,
+              //     children: const [
+              //       MatchProfileModal()
+              //       // tinder_cloneCreationScreen()
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         )),
